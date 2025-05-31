@@ -11,7 +11,8 @@ import BoardActions from './components/BoardActions.vue'
 </template>
 
 <style scoped>
-.main {
+.board {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 24px;

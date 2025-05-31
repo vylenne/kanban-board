@@ -7,12 +7,19 @@ const board = useBoardStore()
 
 <template>
   <div class="board-grid">
-    <Column />
+    <Column
+      v-for="column in board.columns"
+      :key="column.id"
+      :column="column"
+      :editing-enabled="board.editingEnabled"
+      @delete-column="board.deleteColumn(column.id)"
+    />
   </div>
 </template>
 
 <style scoped>
 .board-grid {
+  height: 100%;
   display: flex;
   gap: 20px;
   align-items: flex-start;

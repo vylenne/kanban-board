@@ -1,6 +1,7 @@
 <script setup>
 import IconAdd from '@/components/icons/IconAdd.vue'
 import IconShuffle from '@/components/icons/IconShuffle.vue'
+import IconPause from '@/components/icons/IconPause.vue'
 </script>
 
 <template>
@@ -18,6 +19,7 @@ import IconShuffle from '@/components/icons/IconShuffle.vue'
       Shuffle Cards
     </button>
     <button class="btn-action" @click="emit('toggle-editing')">
+      <IconPause />
       {{ editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
     </button>
   </div>
@@ -28,23 +30,5 @@ import IconShuffle from '@/components/icons/IconShuffle.vue'
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 24px 0;
-}
-
-.btn-action {
-  background: #ffffff;
-  border: 2px solid #e4e4e4;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.btn-action:hover {
-  background: #e4e4e4;
-  cursor: pointer;
 }
 </style>
