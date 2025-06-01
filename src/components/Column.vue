@@ -4,6 +4,7 @@ import type { Column as ColumnType } from '@/types/types'
 import { useBoardStore } from '@/stores/board'
 
 import Card from './Card.vue'
+import Button from './ui/Button.vue'
 import IconClear from './icons/IconClear.vue'
 import IconSort from './icons/IconSort.vue'
 import IconAdd from './icons/IconAdd.vue'
@@ -64,23 +65,28 @@ const deleteThisColumn = () => {
     <div class="column-header" @keydown.enter.prevent="updateName" @blur="updateName" ref="nameEl">
       <p class="header" contenteditable="true">{{ column.name }}</p>
       <div class="column-actions">
-        <button v-if="!isLocked" class="btn-action" @click="toggleLock">
-          <IconPause />
+        <Button v-if="!isLocked" @click="toggleLock">
+          <template #icon>
+            <IconPause />
+          </template>
           Disable Editing
-        </button>
-        <button v-else class="btn-action" @click="toggleLock">
-          <IconPlay />
+        </Button>
+        <Button v-else @click="toggleLock">
+          <template #icon>
+            <IconPlay />
+          </template>
           Unlock Column
-        </button>
-        <button
-          class="btn-action"
+        </Button>
+        <Button
           :class="{ disabled: isLocked }"
           :disabled="isLocked || !board.editingEnabled"
           @click="deleteThisColumn"
         >
-          <IconCancel />
+          <template #icon>
+            <IconCancel />
+          </template>
           Delete Column
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -88,35 +94,39 @@ const deleteThisColumn = () => {
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
-    <button
-      class="btn-action add"
+    <Button
+      extraClass="add"
       @click="addCard"
       :disabled="isLocked || !board.editingEnabled"
       :class="{ disabled: isLocked || !board.editingEnabled }"
     >
-      <IconAdd />
+      <template #icon>
+        <IconAdd />
+      </template>
       New Card
-    </button>
+    </Button>
 
     <div class="column-actions bottom">
-      <button
-        class="btn-action"
+      <Button
         @click="sortCards"
         :disabled="isLocked || !board.editingEnabled"
         :class="{ disabled: isLocked || !board.editingEnabled }"
       >
-        <IconSort class="icon" :class="{ rotate: sortAsc }"/>
+        <template #icon>
+          <IconSort class="icon" :class="{ rotate: sortAsc }"/>
+        </template>
         Sort
-      </button>
-      <button
-        class="btn-action"
+      </Button>
+      <Button
         @click="clearAll"
         :disabled="isLocked || !board.editingEnabled"
         :class="{ disabled: isLocked || !board.editingEnabled }"
       >
-        <IconClear />
+        <template #icon>
+          <IconClear />
+        </template>
         Clear All
-      </button>
+      </Button>
     </div>
   </div>
 </template>

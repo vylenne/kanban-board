@@ -4,8 +4,10 @@ import { storeToRefs } from 'pinia'
 import type { Card } from '@/types/types'
 import { useBoardStore } from '@/stores/board'
 
+import Button from './ui/Button.vue'
 import IconCancel from './icons/IconCancel.vue'
 import IconSave from './icons/IconSave.vue'
+
 
 const props = defineProps<{
   card: Card
@@ -98,14 +100,18 @@ onMounted(async () => {
       </div>
 
       <div class="card-actions">
-        <button class="btn-action" :disabled="!hasChanges" @click="saveChanges">
-          <IconSave />
+        <Button class="btn-action" :disabled="!hasChanges" @click="saveChanges">
+          <template #icon>
+            <IconSave />
+          </template>
           Save Changes
-        </button>
-        <button class="btn-action" @click="cancelChanges">
-          <IconCancel />
+        </Button>
+        <Button class="btn-action" @click="cancelChanges">
+          <template #icon>
+            <IconCancel />
+          </template>
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   </div>

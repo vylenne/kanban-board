@@ -2,6 +2,8 @@
 import { storeToRefs } from 'pinia'
 import { useBoardStore } from '@/stores/board'
 
+import Button from './ui/Button.vue'
+
 import IconAdd from '@/components/icons/IconAdd.vue'
 import IconShuffle from '@/components/icons/IconShuffle.vue'
 import IconPause from '@/components/icons/IconPause.vue'
@@ -29,26 +31,36 @@ const toggleEditing = () => {
 
 <template>
   <div class="actions">
-    <button class="btn-action" @click="addColumn">
-      <IconAdd />
+    <Button @click="addColumn">
+      <template #icon>
+        <IconAdd />
+      </template>
       New Column
-    </button>
-    <button class="btn-action" @click="shuffleColumns">
-      <IconShuffle />
+    </Button>
+    <Button @click="shuffleColumns">
+      <template #icon>
+        <IconShuffle />
+      </template>
       Shuffle Columns
-    </button>
-    <button class="btn-action" @click="shuffleCards">
-      <IconShuffle />
+    </Button>
+    <Button @click="shuffleCards">
+      <template #icon>
+        <IconShuffle />
+      </template>
       Shuffle Cards
-    </button>
-    <button v-if="board.editingEnabled" class="btn-action" @click="toggleEditing">
-      <IconPause />
+    </Button>
+    <Button v-if="board.editingEnabled" @click="toggleEditing">
+      <template #icon>
+        <IconPause />
+      </template>
       Disable Editing
-    </button>
-    <button v-else class="btn-action" @click="toggleEditing">
-      <IconPlay />
+    </Button>
+    <Button v-else @click="toggleEditing">
+      <template #icon>
+        <IconPlay />
+      </template>
       Enable Editing
-    </button>
+    </Button>
   </div>
 </template>
 
