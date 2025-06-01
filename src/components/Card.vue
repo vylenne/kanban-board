@@ -7,6 +7,7 @@ import { useBoardStore } from '@/stores/board'
 import Button from './ui/Button.vue'
 import IconCancel from './icons/IconCancel.vue'
 import IconSave from './icons/IconSave.vue'
+import IconDragDrop from './icons/IconDragDrop.vue'
 
 
 const props = defineProps<{
@@ -20,6 +21,7 @@ const { editingEnabled } = storeToRefs(board)
 
 const isEditing = ref(false)
 
+const cardEl = ref<HTMLElement | null>(null)
 const titleEl = ref<HTMLElement | null>(null)
 const descEl = ref<HTMLElement | null>(null)
 
@@ -81,6 +83,17 @@ const deleteCard = () => {
   removeCard(props.columnId, props.card.id)
 }
 
+const onDragStart = (event: DragEvent) => {
+  event.dataTransfer?.setData('text/plain', JSON.stringify({
+    cardId: props.card.id,
+    fromColumnId: props.columnId,
+  }))
+
+  if (cardEl.value) {
+    event.dataTransfer?.setDragImage(cardEl.value, 0, 0)
+  }
+}
+
 onMounted(async () => {
   if (editingEnabled.value && props.card.title === '') {
     await nextTick()
@@ -90,10 +103,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="card" :class="{ editing: isEditing }" @dblclick="enableEditing"
-    @contextmenu.prevent="deleteCard">
+  <div class="card" ref="cardEl" :class="{ editing: isEditing }" @contextmenu.prevent="deleteCard"
+    @dblclick="enableEditing">
+    <div class="card-icon" draggable="true" @dragstart="onDragStart">
+      <IconDragDrop />
+    </div>
     <div v-if="!isEditing">
-      <h4 class="card-title">{{ card.title || '(no title)' }}</h4>
+      <h4 class="card-title">{{ card.title || 'Add title' }}</h4>
       <p class="card-description">{{ card.description || 'Add description' }}</p>
     </div>
 
@@ -132,6 +148,14 @@ onMounted(async () => {
   border-radius: 8px;
   padding: 16px;
   border: 2px solid #ffffff;
+  position: relative;
+}
+
+.card-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: grab;
 }
 
 .card.editing {

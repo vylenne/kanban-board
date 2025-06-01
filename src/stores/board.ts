@@ -118,6 +118,18 @@ export const useBoardStore = defineStore('board', () => {
     })
   }
 
+  const moveCard = (fromColumnId: string, toColumnId: string, cardId: string) => {
+    const fromColumn = columns.value.find(c => c.id === fromColumnId)
+    const toColumn = columns.value.find(c => c.id === toColumnId)
+    if (!fromColumn || !toColumn) return
+
+    const cardIndex = fromColumn.cards.findIndex(c => c.id === cardId)
+    if (cardIndex === -1) return
+
+    const [card] = fromColumn.cards.splice(cardIndex, 1)
+    toColumn.cards.push(card)
+  }
+
   return {
     columns,
     editingEnabled,
@@ -131,6 +143,7 @@ export const useBoardStore = defineStore('board', () => {
     deleteCard,
     updateCard,
     shuffleCards,
+    moveCard,
     loadFromStorage
   }
 })

@@ -61,10 +61,20 @@ const clearAll = () => {
 const deleteThisColumn = () => {
   emit('delete-column')
 }
+
+const onDrop = (event: DragEvent) => {
+  event.preventDefault()
+  const data = event.dataTransfer?.getData('text/plain')
+  if (!data) return
+  const { cardId, fromColumnId } = JSON.parse(data)
+  if (fromColumnId === props.column.id) return
+
+  board.moveCard(fromColumnId, props.column.id, cardId)
+}
 </script>
 
 <template>
-  <div class="column">
+  <div class="column" @dragover.prevent @drop="onDrop">
     <div class="column-header">
       <p ref="nameEl" class="header" :contenteditable="editingEnabled && !isLocked"
         @keydown.enter.prevent="updateName" @blur="updateName">
@@ -94,7 +104,7 @@ const deleteThisColumn = () => {
       </div>
     </div>
 
-    <div class="card-list">
+    <div class="card-list" :class="{ disabled: isLocked }">
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
