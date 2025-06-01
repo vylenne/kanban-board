@@ -58,7 +58,7 @@ const onDrop = (event: DragEvent) => {
 </script>
 
 <template>
-  <div class="column" @dragover.prevent @drop="onDrop" :disabled="!props.editingEnabled">
+  <div class="column" @dragover.prevent @drop="onDrop" :class="{ disabled: !props.editingEnabled }">
     <div class="column-header">
       <p ref="nameEl" class="header" :contenteditable="props.editingEnabled && !isLocked"
         @keydown.enter.prevent="updateName" @blur="updateName">
