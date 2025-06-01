@@ -1,18 +1,9 @@
 # Kanban-board
 
-This template should help get you started developing with Vue 3 in Vite.
+Комментарии к проекту:
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+- есть 2 дисейбл-состояния для колонок: локальный и глобальный. я реализовала и то и другое, однако есть момент, который можно было учесть – если глобально заблокировать колонки, то хорошо бы давать возможность разблокировать какую-то колонку локально. почему я этого не сделала? это тестовое задание, и я думаю, что в целом все работает, а остальное уже мелочи, которые могут быть обсуждаемы. возможно, доделаю позже и отрефакторю код, связанный с блокировкой колонок.
+- остальной минимальный функционал + дополнительный реализован.
 
 ## Project Setup
 
