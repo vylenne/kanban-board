@@ -1,33 +1,51 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { nanoid } from 'nanoid'
 import type { Column, Card } from '@/types/types'
 
-const generateId = () => Math.random().toString(36).slice(2, 9)
+const STORAGE_KEY = 'kanban-board-state'
 
 export const useBoardStore = defineStore('board', () => {
   const columns = ref<Column[]>([
-    {
-      id: generateId(),
-      name: 'TODO',
-      cards: [],
-    },
-    {
-      id: generateId(),
-      name: 'In progress',
-      cards: [],
-    },
-    {
-      id: generateId(),
-      name: 'Done',
-      cards: [],
-    },
+    { id: nanoid(), name: 'TODO', cards: [] },
+    { id: nanoid(), name: 'In progress', cards: [] },
+    { id: nanoid(), name: 'Done', cards: [] },
   ])
 
   const editingEnabled = ref(true)
 
+  const loadFromStorage = () => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.columns) columns.value = parsed.columns
+        if (typeof parsed.editingEnabled === 'boolean') editingEnabled.value = parsed.editingEnabled
+      } catch {
+        console.warn('Failed to parse saved board state')
+      }
+    }
+  }
+
+  loadFromStorage()
+
+  watch(
+    [columns, editingEnabled],
+    () => {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          columns: columns.value,
+          editingEnabled: editingEnabled.value,
+        }),
+      )
+    },
+    { deep: true },
+  )
+
   const addColumn = () => {
     columns.value.push({
-      id: generateId(),
+      id: nanoid(),
       name: 'New Column',
       cards: [],
     })
@@ -69,7 +87,7 @@ export const useBoardStore = defineStore('board', () => {
     if (!column) return
 
     const newCard: Card = {
-      id: generateId(),
+      id: nanoid(),
       title: '',
       description: ''
     }
@@ -113,5 +131,6 @@ export const useBoardStore = defineStore('board', () => {
     deleteCard,
     updateCard,
     shuffleCards,
+    loadFromStorage
   }
 })
