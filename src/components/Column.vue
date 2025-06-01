@@ -23,13 +23,9 @@ const emit = defineEmits<{
 
 const board = useBoardStore()
 const nameEl = ref<HTMLElement | null>(null)
-const sortAsc = ref(true)
+const sortOrder = ref(true)
 
-const isLocked = computed(() => props.column.isLocked ?? false)
-
-const toggleLock = () => {
-  board.toggleColumnLock(props.column.id)
-}
+const isLocked = computed(() => props.column.isLocked)
 
 const updateName = () => {
   if (!props.editingEnabled || !nameEl.value) return
@@ -44,22 +40,10 @@ const updateName = () => {
   nameEl.value.blur()
 }
 
-const addCard = () => {
-  board.addCard(props.column.id)
-}
-
 const sortCards = () => {
-  const direction = sortAsc.value ? 1 : -1
+  const direction = sortOrder.value ? 1 : -1
   props.column.cards.sort((a, b) => a.title.localeCompare(b.title) * direction)
-  sortAsc.value = !sortAsc.value
-}
-
-const clearAll = () => {
-  props.column.cards.length = 0
-}
-
-const deleteThisColumn = () => {
-  emit('delete-column')
+  sortOrder.value = !sortOrder.value
 }
 
 const onDrop = (event: DragEvent) => {
@@ -74,28 +58,23 @@ const onDrop = (event: DragEvent) => {
 </script>
 
 <template>
-  <div class="column" @dragover.prevent @drop="onDrop">
+  <div class="column" @dragover.prevent @drop="onDrop" :disabled="!props.editingEnabled">
     <div class="column-header">
-      <p ref="nameEl" class="header" :contenteditable="editingEnabled && !isLocked"
+      <p ref="nameEl" class="header" :contenteditable="props.editingEnabled && !isLocked"
         @keydown.enter.prevent="updateName" @blur="updateName">
         {{ column.name }}
-        <span class="count">{{ props.column.cards.length }}</span>
       </p>
+      <span class="count">{{ props.column.cards.length }}</span>
       <div class="column-actions">
-        <Button v-if="!isLocked" @click="toggleLock">
+        <Button @click="board.toggleColumnLock(props.column.id)">
           <template #icon>
-            <IconPause />
+            <IconPlay v-if="isLocked" />
+            <IconPause v-else />
           </template>
-          Disable Editing
+          {{ isLocked ? 'Unlock Column' : 'Disable Editing' }}
         </Button>
-        <Button v-else @click="toggleLock">
-          <template #icon>
-            <IconPlay />
-          </template>
-          Unlock Column
-        </Button>
-        <Button :class="{ disabled: isLocked }" :disabled="isLocked || !board.editingEnabled"
-          @click="deleteThisColumn">
+
+        <Button :class="{ disabled: isLocked }" :disabled="isLocked" @click="emit('delete-column')">
           <template #icon>
             <IconCancel />
           </template>
@@ -104,28 +83,26 @@ const onDrop = (event: DragEvent) => {
       </div>
     </div>
 
-    <div class="card-list" :class="{ disabled: isLocked || !board.editingEnabled }">
+    <div class="card-list" :class="{ disabled: isLocked }">
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
-    <Button extraClass="add" @click="addCard" :disabled="isLocked || !board.editingEnabled"
-      :class="{ disabled: isLocked || !board.editingEnabled }">
+    <Button extraClass="add" @click="board.addCard(props.column.id)" :disabled="isLocked"
+      :class="{ disabled: isLocked }">
       <template #icon>
         <IconAdd />
       </template>
       New Card
     </Button>
 
-    <div class="column-actions bottom">
-      <Button @click="sortCards" :disabled="isLocked || !board.editingEnabled"
-        :class="{ disabled: isLocked || !board.editingEnabled }">
+    <div class="column-actions bottom" :disabled="isLocked">
+      <Button @click="sortCards" :class="{ disabled: isLocked }">
         <template #icon>
-          <IconSort class="icon" :class="{ rotate: sortAsc }" />
+          <IconSort class="icon" :class="{ rotate: sortOrder }" />
         </template>
         Sort
       </Button>
-      <Button @click="clearAll" :disabled="isLocked || !board.editingEnabled"
-        :class="{ disabled: isLocked || !board.editingEnabled }">
+      <Button @click="board.clearColumnCards(props.column.id)" :class="{ disabled: isLocked }">
         <template #icon>
           <IconClear />
         </template>

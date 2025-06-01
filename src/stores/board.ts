@@ -118,6 +118,13 @@ export const useBoardStore = defineStore('board', () => {
     })
   }
 
+  const clearColumnCards = (columnId: string) => {
+    const column = columns.value.find(col => col.id === columnId)
+    if (column) {
+      column.cards = []
+    }
+  }
+
   const moveCard = (fromColumnId: string, toColumnId: string, cardId: string) => {
     const fromColumn = columns.value.find(c => c.id === fromColumnId)
     const toColumn = columns.value.find(c => c.id === toColumnId)
@@ -139,6 +146,7 @@ export const useBoardStore = defineStore('board', () => {
     toggleGlobalEditing,
     toggleColumnLock,
     shuffleColumns,
+    clearColumnCards,
     addCard,
     deleteCard,
     updateCard,
