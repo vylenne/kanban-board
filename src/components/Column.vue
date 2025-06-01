@@ -110,6 +110,7 @@ const deleteThisColumn = () => {
 
 .column-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-weight: bold;
   margin-bottom: 8px;

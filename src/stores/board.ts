@@ -50,6 +50,36 @@ export const useBoardStore = defineStore('board', () => {
       .sort(() => Math.random() - 0.5)
   }
 
+  const addCard = (columnId: string) => {
+    const column = columns.value.find(col => col.id === columnId)
+    if (!column) return
+
+    const newCard: Card = {
+      id: generateId(),
+      title: '',
+      description: ''
+    }
+
+    column.cards.push(newCard)
+  }
+
+  const deleteCard = (columnId: string, cardId: string) => {
+    const column = columns.value.find(col => col.id === columnId)
+    if (!column) return
+
+    column.cards = column.cards.filter(card => card.id !== cardId)
+  }
+
+  const updateCard = (columnId: string, cardId: string, updated: Partial<Card>) => {
+    const column = columns.value.find(col => col.id === columnId)
+    if (!column) return
+
+    const card = column.cards.find(card => card.id === cardId)
+    if (!card) return
+
+    Object.assign(card, updated)
+  }
+
   const shuffleCards = () => {
     columns.value.forEach((col) => {
       col.cards = [...col.cards].sort(() => Math.random() - 0.5)
@@ -63,6 +93,9 @@ export const useBoardStore = defineStore('board', () => {
     deleteColumn,
     toggleEditing,
     shuffleColumns,
+    addCard,
+    deleteCard,
+    updateCard,
     shuffleCards,
   }
 })

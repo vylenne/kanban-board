@@ -2,6 +2,10 @@
 import IconAdd from '@/components/icons/IconAdd.vue'
 import IconShuffle from '@/components/icons/IconShuffle.vue'
 import IconPause from '@/components/icons/IconPause.vue'
+import { useBoardStore } from '@/stores/board'
+
+const board = useBoardStore()
+
 </script>
 
 <template>
@@ -20,7 +24,7 @@ import IconPause from '@/components/icons/IconPause.vue'
     </button>
     <button class="btn-action" @click="emit('toggle-editing')">
       <IconPause />
-      {{ editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
+      {{ board.editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
     </button>
   </div>
 </template>
