@@ -104,7 +104,7 @@ const onDrop = (event: DragEvent) => {
       </div>
     </div>
 
-    <div class="card-list" :class="{ disabled: isLocked }">
+    <div class="card-list" :class="{ disabled: isLocked || !board.editingEnabled }">
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
