@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Column } from '@/types/types'
+import type { Column, Card } from '@/types/types'
 
 const generateId = () => Math.random().toString(36).slice(2, 9)
 

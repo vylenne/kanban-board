@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import Column from './Column.vue'
+import { computed } from 'vue'
 import { useBoardStore } from '@/stores/board'
+import Column from './Column.vue'
+import BoardActions from './BoardActions.vue'
 
 const board = useBoardStore()
+const columns = computed(() => board.columns)
 </script>
 
 <template>
-  <div class="board-grid">
-    <Column
-      v-for="column in board.columns"
-      :key="column.id"
-      :column="column"
-      :editing-enabled="board.editingEnabled"
-      @delete-column="board.deleteColumn(column.id)"
-    />
+  <div>
+    <div class="board-grid">
+      <Column
+        v-for="column in columns" :key="column.id"
+        :column="column"
+        :editing-enabled="board.editingEnabled"
+        @delete-column="board.deleteColumn(column.id)" />
+    </div>
+    <BoardActions />
   </div>
 </template>
 
