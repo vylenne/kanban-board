@@ -69,6 +69,7 @@ const deleteThisColumn = () => {
       <p ref="nameEl" class="header" :contenteditable="editingEnabled && !isLocked"
         @keydown.enter.prevent="updateName" @blur="updateName">
         {{ column.name }}
+        <span class="count">{{ props.column.cards.length }}</span>
       </p>
       <div class="column-actions">
         <Button v-if="!isLocked" @click="toggleLock">
@@ -162,6 +163,12 @@ const deleteThisColumn = () => {
   outline: 1px dashed #aaa;
   padding: 2px;
   background: #fff;
+}
+
+.count {
+  font-weight: 700;
+  margin-left: 4px;
+  color: #3f3f3f;
 }
 
 .column-actions {

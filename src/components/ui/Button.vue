@@ -55,11 +55,11 @@ const emit = defineEmits<{
   background: #becbd7;
 }
 
-.btn-action .icon {
+.btn-action:deep(.icon) {
   transition: transform 0.3s ease;
 }
 
-.btn-action .rotate {
+.btn-action:deep(.rotate) {
   transform: rotate(180deg);
 }
 </style>
