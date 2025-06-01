@@ -53,9 +53,8 @@ const deleteThisColumn = () => {
 </script>
 
 <template>
-  <div class="column">
-    <div class="column-header" :class="{ disabled: !editingEnabled }"
-      @keydown.enter.prevent="updateName" @blur="updateName" ref="nameEl">
+  <div class="column" :class="{ disabled: !editingEnabled }">
+    <div class="column-header" @keydown.enter.prevent="updateName" @blur="updateName" ref="nameEl">
       <p class="header" contenteditable="true">{{ column.name }}</p>
       <div class="column-actions">
         <button v-if="editingEnabled" class="btn-action" @click="toggleEditing">
@@ -108,20 +107,18 @@ const deleteThisColumn = () => {
   height: 100%;
 }
 
+.column.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .column-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: bold;
   margin-bottom: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #ccc;
   outline: none;
-}
-
-.column-header.disabled {
-  pointer-events: none;
-  opacity: 0.6;
 }
 
 .header {

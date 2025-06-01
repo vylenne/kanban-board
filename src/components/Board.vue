@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useBoardStore } from '@/stores/board'
+
 import Column from './Column.vue'
 import BoardActions from './BoardActions.vue'
 
@@ -9,7 +10,7 @@ const columns = computed(() => board.columns)
 </script>
 
 <template>
-  <div>
+  <div class="board">
     <div class="board-grid">
       <Column
         v-for="column in columns" :key="column.id"
@@ -22,6 +23,14 @@ const columns = computed(() => board.columns)
 </template>
 
 <style scoped>
+.board {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
 .board-grid {
   height: 100%;
   display: flex;

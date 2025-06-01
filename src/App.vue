@@ -3,17 +3,5 @@ import Board from './components/Board.vue'
 </script>
 
 <template>
-  <main class="board">
-    <Board />
-  </main>
+  <Board />
 </template>
-
-<style scoped>
-.board {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-}
-</style>
