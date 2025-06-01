@@ -66,6 +66,13 @@ const saveChanges = () => {
   isEditing.value = false
 }
 
+const onEnter = (e: KeyboardEvent) => {
+  if (!e.shiftKey && hasChanges.value) {
+    e.preventDefault()
+    saveChanges()
+  }
+}
+
 const cancelChanges = () => {
   isEditing.value = false
 }
@@ -91,11 +98,13 @@ onMounted(async () => {
     </div>
 
     <div v-else>
-      <div class="editable" contenteditable ref="titleEl" @input="onInput">
+      <div class="editable" contenteditable ref="titleEl" @input="onInput"
+        @keydown.enter.prevent="onEnter">
         {{ card.title || '' }}
       </div>
 
-      <div class="editable" contenteditable ref="descEl" @input="onInput">
+      <div class="editable" contenteditable ref="descEl" @input="onInput"
+        @keydown.enter.prevent="onEnter">
         {{ card.description || '' }}
       </div>
 
