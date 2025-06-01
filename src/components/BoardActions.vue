@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { useBoardStore } from '@/stores/board'
 
 import Button from './ui/Button.vue'
@@ -10,56 +9,34 @@ import IconPause from '@/components/icons/IconPause.vue'
 import IconPlay from './icons/IconPlay.vue'
 
 const board = useBoardStore()
-const { editingEnabled } = storeToRefs(board)
-
-const addColumn = () => {
-  board.addColumn()
-}
-
-const shuffleColumns = () => {
-  board.shuffleColumns()
-}
-
-const shuffleCards = () => {
-  board.shuffleCards()
-}
-
-const toggleEditing = () => {
-  board.editingEnabled = !editingEnabled.value
-}
 </script>
 
 <template>
   <div class="actions">
-    <Button @click="addColumn">
+    <Button @click="board.addColumn()">
       <template #icon>
         <IconAdd />
       </template>
       New Column
     </Button>
-    <Button @click="shuffleColumns">
+    <Button @click="board.shuffleColumns()">
       <template #icon>
         <IconShuffle />
       </template>
       Shuffle Columns
     </Button>
-    <Button @click="shuffleCards">
+    <Button @click="board.shuffleCards()">
       <template #icon>
         <IconShuffle />
       </template>
       Shuffle Cards
     </Button>
-    <Button v-if="board.editingEnabled" @click="toggleEditing">
+    <Button @click="board.toggleGlobalEditing">
       <template #icon>
-        <IconPause />
+        <IconPause v-if="board.editingEnabled" />
+        <IconPlay v-else />
       </template>
-      Disable Editing
-    </Button>
-    <Button v-else @click="toggleEditing">
-      <template #icon>
-        <IconPlay />
-      </template>
-      Enable Editing
+      {{ board.editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
     </Button>
   </div>
 </template>

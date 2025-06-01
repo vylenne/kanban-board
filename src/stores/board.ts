@@ -7,9 +7,9 @@ const STORAGE_KEY = 'kanban-board-state'
 
 export const useBoardStore = defineStore('board', () => {
   const columns = ref<Column[]>([
-    { id: nanoid(), name: 'TODO', cards: [] },
-    { id: nanoid(), name: 'In progress', cards: [] },
-    { id: nanoid(), name: 'Done', cards: [] },
+    { id: nanoid(), name: 'TODO', isLocked: false, cards: [] },
+    { id: nanoid(), name: 'In progress', isLocked: false, cards: [] },
+    { id: nanoid(), name: 'Done', isLocked: false, cards: [] },
   ])
 
   const editingEnabled = ref(true)
@@ -65,7 +65,7 @@ export const useBoardStore = defineStore('board', () => {
     }
   }
 
-  const toggleEditing = () => {
+  const toggleGlobalEditing = () => {
     editingEnabled.value = !editingEnabled.value
   }
 
@@ -136,7 +136,7 @@ export const useBoardStore = defineStore('board', () => {
     addColumn,
     updateColumn,
     deleteColumn,
-    toggleEditing,
+    toggleGlobalEditing,
     toggleColumnLock,
     shuffleColumns,
     addCard,
