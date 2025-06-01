@@ -33,6 +33,13 @@ export const useBoardStore = defineStore('board', () => {
     })
   }
 
+  const updateColumn = (columnId: string, updatedData: Partial<Column>) => {
+    const column = columns.value.find(col => col.id === columnId)
+    if (column) {
+      Object.assign(column, updatedData)
+    }
+  }
+
   const deleteColumn = (columnId: string) => {
     const index = columns.value.findIndex(col => col.id === columnId)
     if (index !== -1) {
@@ -97,6 +104,7 @@ export const useBoardStore = defineStore('board', () => {
     columns,
     editingEnabled,
     addColumn,
+    updateColumn,
     deleteColumn,
     toggleEditing,
     toggleColumnLock,

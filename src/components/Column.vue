@@ -36,7 +36,10 @@ const updateName = () => {
 
   const text = nameEl.value.innerText.trim()
   if (text && text !== props.column.name) {
-    props.column.name = text
+    board.updateColumn(props.column.id, {
+      ...props.column,
+      name: text,
+    })
   }
   nameEl.value.blur()
 }
@@ -62,8 +65,11 @@ const deleteThisColumn = () => {
 
 <template>
   <div class="column">
-    <div class="column-header" @keydown.enter.prevent="updateName" @blur="updateName" ref="nameEl">
-      <p class="header" contenteditable="true">{{ column.name }}</p>
+    <div class="column-header">
+      <p ref="nameEl" class="header" :contenteditable="editingEnabled && !isLocked"
+        @keydown.enter.prevent="updateName" @blur="updateName">
+        {{ column.name }}
+      </p>
       <div class="column-actions">
         <Button v-if="!isLocked" @click="toggleLock">
           <template #icon>
@@ -77,11 +83,8 @@ const deleteThisColumn = () => {
           </template>
           Unlock Column
         </Button>
-        <Button
-          :class="{ disabled: isLocked }"
-          :disabled="isLocked || !board.editingEnabled"
-          @click="deleteThisColumn"
-        >
+        <Button :class="{ disabled: isLocked }" :disabled="isLocked || !board.editingEnabled"
+          @click="deleteThisColumn">
           <template #icon>
             <IconCancel />
           </template>
@@ -94,12 +97,8 @@ const deleteThisColumn = () => {
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
-    <Button
-      extraClass="add"
-      @click="addCard"
-      :disabled="isLocked || !board.editingEnabled"
-      :class="{ disabled: isLocked || !board.editingEnabled }"
-    >
+    <Button extraClass="add" @click="addCard" :disabled="isLocked || !board.editingEnabled"
+      :class="{ disabled: isLocked || !board.editingEnabled }">
       <template #icon>
         <IconAdd />
       </template>
@@ -107,21 +106,15 @@ const deleteThisColumn = () => {
     </Button>
 
     <div class="column-actions bottom">
-      <Button
-        @click="sortCards"
-        :disabled="isLocked || !board.editingEnabled"
-        :class="{ disabled: isLocked || !board.editingEnabled }"
-      >
+      <Button @click="sortCards" :disabled="isLocked || !board.editingEnabled"
+        :class="{ disabled: isLocked || !board.editingEnabled }">
         <template #icon>
-          <IconSort class="icon" :class="{ rotate: sortAsc }"/>
+          <IconSort class="icon" :class="{ rotate: sortAsc }" />
         </template>
         Sort
       </Button>
-      <Button
-        @click="clearAll"
-        :disabled="isLocked || !board.editingEnabled"
-        :class="{ disabled: isLocked || !board.editingEnabled }"
-      >
+      <Button @click="clearAll" :disabled="isLocked || !board.editingEnabled"
+        :class="{ disabled: isLocked || !board.editingEnabled }">
         <template #icon>
           <IconClear />
         </template>
@@ -163,6 +156,12 @@ const deleteThisColumn = () => {
   font-weight: 600;
   color: #a9a9a9;
   text-transform: uppercase;
+}
+
+.header[contenteditable='true']:focus {
+  outline: 1px dashed #aaa;
+  padding: 2px;
+  background: #fff;
 }
 
 .column-actions {
