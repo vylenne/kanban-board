@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Column as ColumnType } from '@/types/types'
 import { useBoardStore } from '@/stores/board'
 
@@ -22,8 +22,13 @@ const emit = defineEmits<{
 
 const board = useBoardStore()
 const nameEl = ref<HTMLElement | null>(null)
+const sortAsc = ref(true)
 
-const { toggleEditing } = board
+const isLocked = computed(() => props.column.isLocked ?? false)
+
+const toggleLock = () => {
+  board.toggleColumnLock(props.column.id)
+}
 
 const updateName = () => {
   if (!props.editingEnabled || !nameEl.value) return
@@ -40,7 +45,9 @@ const addCard = () => {
 }
 
 const sortCards = () => {
-  props.column.cards.sort((a, b) => a.title.localeCompare(b.title))
+  const direction = sortAsc.value ? 1 : -1
+  props.column.cards.sort((a, b) => a.title.localeCompare(b.title) * direction)
+  sortAsc.value = !sortAsc.value
 }
 
 const clearAll = () => {
@@ -53,19 +60,24 @@ const deleteThisColumn = () => {
 </script>
 
 <template>
-  <div class="column" :class="{ disabled: !editingEnabled }">
+  <div class="column">
     <div class="column-header" @keydown.enter.prevent="updateName" @blur="updateName" ref="nameEl">
       <p class="header" contenteditable="true">{{ column.name }}</p>
       <div class="column-actions">
-        <button v-if="editingEnabled" class="btn-action" @click="toggleEditing">
+        <button v-if="!isLocked" class="btn-action" @click="toggleLock">
           <IconPause />
           Disable Editing
         </button>
-        <button v-else class="btn-action" @click="toggleEditing">
+        <button v-else class="btn-action" @click="toggleLock">
           <IconPlay />
           Unlock Column
         </button>
-        <button class="btn-action" @click="deleteThisColumn">
+        <button
+          class="btn-action"
+          :class="{ disabled: isLocked }"
+          :disabled="isLocked || !board.editingEnabled"
+          @click="deleteThisColumn"
+        >
           <IconCancel />
           Delete Column
         </button>
@@ -76,17 +88,32 @@ const deleteThisColumn = () => {
       <Card v-for="card in column.cards" :key="card.id" :card="card" :column-id="column.id" />
     </div>
 
-    <button class="btn-action add" @click="addCard">
+    <button
+      class="btn-action add"
+      @click="addCard"
+      :disabled="isLocked || !board.editingEnabled"
+      :class="{ disabled: isLocked || !board.editingEnabled }"
+    >
       <IconAdd />
       New Card
     </button>
 
     <div class="column-actions bottom">
-      <button class="btn-action" @click="sortCards">
-        <IconSort />
+      <button
+        class="btn-action"
+        @click="sortCards"
+        :disabled="isLocked || !board.editingEnabled"
+        :class="{ disabled: isLocked || !board.editingEnabled }"
+      >
+        <IconSort class="icon" :class="{ rotate: sortAsc }"/>
         Sort
       </button>
-      <button class="btn-action" @click="clearAll">
+      <button
+        class="btn-action"
+        @click="clearAll"
+        :disabled="isLocked || !board.editingEnabled"
+        :class="{ disabled: isLocked || !board.editingEnabled }"
+      >
         <IconClear />
         Clear All
       </button>
@@ -107,7 +134,7 @@ const deleteThisColumn = () => {
   height: 100%;
 }
 
-.column.disabled {
+.disabled {
   pointer-events: none;
   opacity: 0.6;
 }

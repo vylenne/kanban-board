@@ -7,5 +7,6 @@ export interface Card {
 export interface Column {
   id: string
   name: string
+  isLocked?: boolean
   cards: Card[]
 }

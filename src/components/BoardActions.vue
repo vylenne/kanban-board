@@ -5,6 +5,7 @@ import { useBoardStore } from '@/stores/board'
 import IconAdd from '@/components/icons/IconAdd.vue'
 import IconShuffle from '@/components/icons/IconShuffle.vue'
 import IconPause from '@/components/icons/IconPause.vue'
+import IconPlay from './icons/IconPlay.vue'
 
 const board = useBoardStore()
 const { editingEnabled } = storeToRefs(board)
@@ -40,9 +41,13 @@ const toggleEditing = () => {
       <IconShuffle />
       Shuffle Cards
     </button>
-    <button class="btn-action" @click="toggleEditing">
+    <button v-if="board.editingEnabled" class="btn-action" @click="toggleEditing">
       <IconPause />
-      {{ board.editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
+      Disable Editing
+    </button>
+    <button v-else class="btn-action" @click="toggleEditing">
+      <IconPlay />
+      Enable Editing
     </button>
   </div>
 </template>

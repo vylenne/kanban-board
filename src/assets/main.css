@@ -19,6 +19,7 @@
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
+  transition: 0.3s all;
 }
 
 .btn-action:hover {
@@ -37,4 +38,12 @@
 
 .btn-action.add:hover {
   background: #becbd7;
+}
+
+.btn-action .icon {
+  transition: transform 0.3s ease;
+}
+
+.btn-action .rotate {
+  transform: rotate(180deg);
 }

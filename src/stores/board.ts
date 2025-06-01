@@ -44,6 +44,13 @@ export const useBoardStore = defineStore('board', () => {
     editingEnabled.value = !editingEnabled.value
   }
 
+  const toggleColumnLock = (columnId: string) => {
+    const col = columns.value.find((c) => c.id === columnId)
+    if (col) {
+      col.isLocked = !col.isLocked
+    }
+  }
+
   const shuffleColumns = () => {
     columns.value = columns.value
       .map((col) => ({ ...col }))
@@ -92,6 +99,7 @@ export const useBoardStore = defineStore('board', () => {
     addColumn,
     deleteColumn,
     toggleEditing,
+    toggleColumnLock,
     shuffleColumns,
     addCard,
     deleteCard,
