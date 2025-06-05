@@ -1,21 +1,28 @@
 <script setup lang="ts">
-defineProps<{
+const props = withDefaults(defineProps<{
   disabled?: boolean
-  extraClass?: string
-}>()
+  className?: string
+}>(), {
+  disabled: false,
+  className: '',
+})
 
 const emit = defineEmits<{
   (e: 'click', event: MouseEvent): void
 }>()
+
+const handleClick = (event: MouseEvent) => {
+  emit('click', event)
+}
 </script>
 
 <template>
   <button
     type="button"
-    :disabled="disabled"
+    :disabled="props.disabled"
     class="btn-action"
-    :class="extraClass"
-    @click="(e) => emit('click', e)">
+    :class="props.className"
+    @click="handleClick">
     <slot name="icon" />
     <slot />
   </button>

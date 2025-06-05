@@ -1,10 +1,11 @@
-export interface Card {
+export type Card = {
   id: string
   title: string
   description: string
+  updatedAt: string
 }
 
-export interface Column {
+export type Column = {
   id: string
   name: string
   isLocked?: boolean

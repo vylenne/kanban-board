@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { nanoid } from 'nanoid'
-import type { Column, Card } from '@/types/types'
+import type { Column, Card } from '@/types'
 
 const STORAGE_KEY = 'kanban-board-state'
 
@@ -89,7 +89,8 @@ export const useBoardStore = defineStore('board', () => {
     const newCard: Card = {
       id: nanoid(),
       title: '',
-      description: ''
+      description: '',
+      updatedAt: new Date().toISOString(),
     }
 
     column.cards.push(newCard)

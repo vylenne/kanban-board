@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { Card } from '@/types/types'
+import type { Card } from '@/types'
 import { useBoardStore } from '@/stores/board'
 
 import Button from './ui/Button.vue'
