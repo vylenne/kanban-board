@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import type { Card } from '@/types'
 import { useBoardStore } from '@/stores/board'
 
@@ -31,8 +31,6 @@ const onInput = () => {
 }
 
 const enableEditing = async () => {
-  // if (!isLocked) return
-
   isEditing.value = true
   original.value = {
     title: props.card.title,
@@ -88,6 +86,12 @@ const onDragStart = (event: DragEvent) => {
     event.dataTransfer?.setDragImage(cardEl.value, 0, 0)
   }
 }
+
+onMounted(async () => {
+  if (!props.card.title.trim()) {
+    await enableEditing()
+  }
+})
 </script>
 
 <template>
@@ -102,15 +106,11 @@ const onDragStart = (event: DragEvent) => {
     </div>
 
     <div v-else>
-      <div class="editable" contenteditable ref="titleEl" @input="onInput"
-        @keydown.enter.prevent="onEnter">
-        {{ card.title || '' }}
-      </div>
+      <input class="editable-input" v-model="titleDraft" placeholder="Title"
+        @keydown.enter.prevent="onEnter" ref="titleEl" />
 
-      <div class="editable" contenteditable ref="descEl" @input="onInput"
-        @keydown.enter.prevent="onEnter">
-        {{ card.description || '' }}
-      </div>
+      <textarea class="editable-textarea" v-model="descDraft" placeholder="Add description"
+        @keydown.enter.prevent="onEnter" ref="descEl" rows="2" />
 
       <div class="card-actions">
         <Button class="btn-action" :disabled="!hasChanges" @click="saveChanges">
@@ -137,6 +137,8 @@ const onDragStart = (event: DragEvent) => {
   padding: 16px;
   border: 2px solid #ffffff;
   position: relative;
+  max-width: 420px;
+  word-wrap: break-word;
 }
 
 .card-icon {
@@ -151,28 +153,47 @@ const onDragStart = (event: DragEvent) => {
 }
 
 .card-title {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 140%;
-  font-weight: 700;
+  font-weight: 600;
   font-family: Inter, sans-serif;
 }
 
 .card-description {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 140%;
-  font-weight: 500;
+  font-weight: 600;
   font-family: Inter, sans-serif;
   color: #00000070;
   margin-top: 8px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.4em * 2);
 }
 
-.editable {
-  border: 1px dashed #cccccc;
+.editable-input,
+.editable-textarea {
   border-radius: 4px;
   padding: 4px;
-  font-size: 13px;
+  font-family: Inter;
+  font-size: 14px;
   margin-bottom: 4px;
   outline: none;
+  border: none;
+  display: flex;
+  width: 100%;
+}
+
+.editable-input {
+  font-weight: 600;
+}
+
+.editable-textarea {
+  font-weight: 500;
 }
 
 .card-actions {

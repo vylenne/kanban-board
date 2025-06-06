@@ -6,29 +6,37 @@ import Button from './ui/Button.vue'
 import { IconAdd, IconShuffle, IconPause, IconPlay } from '@/components/icons'
 
 const board = useBoardStore()
+
+
+const actions = [
+  {
+    label: 'New Column',
+    icon: IconAdd,
+    action: board.addColumn,
+  },
+  {
+    label: 'Shuffle Columns',
+    icon: IconShuffle,
+    action: board.shuffleColumns,
+  },
+  {
+    label: 'Shuffle Cards',
+    icon: IconShuffle,
+    action: board.shuffleCards,
+  },
+]
 </script>
 
 <template>
   <div>
     <div class="actions">
-      <Button @click="board.addColumn">
+      <Button v-for="(btn, index) in actions" :key="index" @click="btn.action">
         <template #icon>
-          <IconAdd />
+          <component :is="btn.icon" />
         </template>
-        New Column
+        {{ btn.label }}
       </Button>
-      <Button @click="board.shuffleColumns">
-        <template #icon>
-          <IconShuffle />
-        </template>
-        Shuffle Columns
-      </Button>
-      <Button @click="board.shuffleCards">
-        <template #icon>
-          <IconShuffle />
-        </template>
-        Shuffle Cards
-      </Button>
+
       <Button @click="board.toggleLockAllColumns">
         <template #icon>
           <IconPlay v-if="board.allColumnsLocked" />
