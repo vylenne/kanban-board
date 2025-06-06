@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref, computed, nextTick } from 'vue'
 import type { Card } from '@/types'
 import { useBoardStore } from '@/stores/board'
 
@@ -14,7 +13,6 @@ const props = defineProps<{
 
 const board = useBoardStore()
 const { updateCard, deleteCard: removeCard } = board
-const { editingEnabled } = storeToRefs(board)
 
 const isEditing = ref(false)
 
@@ -33,7 +31,7 @@ const onInput = () => {
 }
 
 const enableEditing = async () => {
-  if (!editingEnabled.value) return
+  // if (!isLocked) return
 
   isEditing.value = true
   original.value = {
@@ -90,13 +88,6 @@ const onDragStart = (event: DragEvent) => {
     event.dataTransfer?.setDragImage(cardEl.value, 0, 0)
   }
 }
-
-onMounted(async () => {
-  if (editingEnabled.value && props.card.title === '') {
-    await nextTick()
-    enableEditing()
-  }
-})
 </script>
 
 <template>
@@ -106,7 +97,7 @@ onMounted(async () => {
       <IconDragDrop />
     </div>
     <div v-if="!isEditing">
-      <h4 class="card-title">{{ card.title || 'Add title' }}</h4>
+      <h4 class="card-title">{{ card.title || '' }}</h4>
       <p class="card-description">{{ card.description || 'Add description' }}</p>
     </div>
 

@@ -12,7 +12,7 @@ export const useBoardStore = defineStore('board', () => {
     { id: nanoid(), name: 'Done', isLocked: false, cards: [] },
   ])
 
-  const editingEnabled = ref(true)
+  const allColumnsLocked = ref(false)
 
   const loadFromStorage = () => {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -20,7 +20,6 @@ export const useBoardStore = defineStore('board', () => {
       try {
         const parsed = JSON.parse(saved)
         if (parsed.columns) columns.value = parsed.columns
-        if (typeof parsed.editingEnabled === 'boolean') editingEnabled.value = parsed.editingEnabled
       } catch {
         console.warn('Failed to parse saved board state')
       }
@@ -30,13 +29,12 @@ export const useBoardStore = defineStore('board', () => {
   loadFromStorage()
 
   watch(
-    [columns, editingEnabled],
+    [columns],
     () => {
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
           columns: columns.value,
-          editingEnabled: editingEnabled.value,
         }),
       )
     },
@@ -65,8 +63,12 @@ export const useBoardStore = defineStore('board', () => {
     }
   }
 
-  const toggleGlobalEditing = () => {
-    editingEnabled.value = !editingEnabled.value
+  const toggleLockAllColumns = () => {
+    const shouldLock = columns.value.some(col => !col.isLocked)
+    allColumnsLocked.value = shouldLock
+    columns.value.forEach(col => {
+      col.isLocked = shouldLock
+    })
   }
 
   const toggleColumnLock = (columnId: string) => {
@@ -140,11 +142,11 @@ export const useBoardStore = defineStore('board', () => {
 
   return {
     columns,
-    editingEnabled,
+    allColumnsLocked,
     addColumn,
     updateColumn,
     deleteColumn,
-    toggleGlobalEditing,
+    toggleLockAllColumns,
     toggleColumnLock,
     shuffleColumns,
     clearColumnCards,

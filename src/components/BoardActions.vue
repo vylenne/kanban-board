@@ -29,12 +29,12 @@ const board = useBoardStore()
         </template>
         Shuffle Cards
       </Button>
-      <Button @click="board.toggleGlobalEditing">
+      <Button @click="board.toggleLockAllColumns">
         <template #icon>
-          <IconPause v-if="board.editingEnabled" />
-          <IconPlay v-else />
+          <IconPlay v-if="board.allColumnsLocked" />
+          <IconPause v-else />
         </template>
-        {{ board.editingEnabled ? 'Disable Editing' : 'Enable Editing' }}
+        {{ board.allColumnsLocked ? 'Enable Editing' : 'Disable Editing' }}
       </Button>
     </div>
     <p class="desc">Board Actions</p>

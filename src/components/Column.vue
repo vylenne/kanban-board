@@ -12,7 +12,6 @@ import { IconClear, IconSort, IconAdd, IconPause, IconPlay, IconCancel } from '@
 
 const props = defineProps<{
   column: ColumnType
-  editingEnabled: boolean
 }>()
 
 const emit = defineEmits<{
@@ -39,7 +38,7 @@ const addCard = () => {
 }
 
 const updateName = () => {
-  if (!props.editingEnabled || !nameEl.value) return
+  if (!nameEl.value) return
 
   const text = nameEl.value.innerText.trim()
   if (text && text !== props.column.name) {
@@ -98,11 +97,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="column" @dragover.prevent @drop="onDrop" :class="{ disabled: !props.editingEnabled }">
+  <div class="column" @dragover.prevent @drop="onDrop">
     <div>
       <div class="column-header">
         <div class="wrap">
-          <p ref="nameEl" class="header" :contenteditable="props.editingEnabled && !isLocked"
+          <p ref="nameEl" class="header" :contenteditable="!isLocked"
             @keydown.enter.prevent="updateName" @blur="updateName">
             {{ column.name }}
           </p>
@@ -159,11 +158,10 @@ onUnmounted(() => {
 
 <style scoped>
 .column {
-  background: #f6f8fa;
-  border-radius: 8px;
+  background: #eceff2;
+  border-radius: 12px;
   padding: 16px;
   min-width: 250px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
