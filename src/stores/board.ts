@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { nanoid } from 'nanoid'
 import type { Column, Card } from '@/types'
 
@@ -12,8 +12,9 @@ export const useBoardStore = defineStore('board', () => {
     { id: nanoid(), name: 'Done', isLocked: false, cards: [] },
   ])
 
-  const allColumnsLocked = ref(false)
-
+  const allColumnsLocked = computed(() =>
+    columns.value.length > 0 && columns.value.every(col => col.isLocked)
+  )
   const loadFromStorage = () => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
@@ -64,8 +65,7 @@ export const useBoardStore = defineStore('board', () => {
   }
 
   const toggleLockAllColumns = () => {
-    const shouldLock = columns.value.some(col => !col.isLocked)
-    allColumnsLocked.value = shouldLock
+    const shouldLock = !allColumnsLocked.value
     columns.value.forEach(col => {
       col.isLocked = shouldLock
     })
