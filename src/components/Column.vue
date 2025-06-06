@@ -4,16 +4,11 @@ import type { Column as ColumnType } from '@/types'
 
 import { useBoardStore } from '@/stores/board'
 
-import { getTimeAgo } from '@/shared'
+import { getTimeAgo, detectSortOrder } from '@/shared'
 
 import Card from './Card.vue'
 import Button from './ui/Button.vue'
-import IconClear from './icons/IconClear.vue'
-import IconSort from './icons/IconSort.vue'
-import IconAdd from './icons/IconAdd.vue'
-import IconPause from './icons/IconPause.vue'
-import IconPlay from './icons/IconPlay.vue'
-import IconCancel from './icons/IconCancel.vue'
+import { IconClear, IconSort, IconAdd, IconPause, IconPlay, IconCancel } from '@/components/icons'
 
 const props = defineProps<{
   column: ColumnType
@@ -24,11 +19,19 @@ const emit = defineEmits<{
   (e: 'delete-column'): void
 }>()
 
+let timer: number
+
 const board = useBoardStore()
 const nameEl = ref<HTMLElement | null>(null)
+const lastEditTime = ref('')
 const sortOrder = ref(true)
+const hasSorted = ref(false)
 
 const isLocked = computed(() => props.column.isLocked)
+
+const sortLabel = computed(() => {
+  return sortOrder.value ? 'Ascending' : 'Descending'
+})
 
 const addCard = () => {
   board.addCard(props.column.id)
@@ -53,8 +56,6 @@ const lastUpdatedAt = computed(() => {
   return dates.length ? Math.max(...dates) : 0
 })
 
-const lastEditTime = ref('')
-
 const updateLastEditText = () => {
   if (!lastUpdatedAt.value) {
     lastEditTime.value = ''
@@ -63,12 +64,11 @@ const updateLastEditText = () => {
   lastEditTime.value = getTimeAgo(new Date(lastUpdatedAt.value).toISOString())
 }
 
-let timer: number
-
 const sortCards = () => {
   const direction = sortOrder.value ? 1 : -1
   props.column.cards.sort((a, b) => a.title.localeCompare(b.title) * direction)
   sortOrder.value = !sortOrder.value
+  hasSorted.value = true
 }
 
 const onDrop = (event: DragEvent) => {
@@ -84,6 +84,12 @@ const onDrop = (event: DragEvent) => {
 onMounted(() => {
   updateLastEditText()
   timer = window.setInterval(updateLastEditText, 60 * 1000)
+
+  const { isSorted, ascending } = detectSortOrder(props.column.cards)
+  if (isSorted) {
+    hasSorted.value = true
+    sortOrder.value = ascending
+  }
 })
 
 onUnmounted(() => {
@@ -95,11 +101,14 @@ onUnmounted(() => {
   <div class="column" @dragover.prevent @drop="onDrop" :class="{ disabled: !props.editingEnabled }">
     <div>
       <div class="column-header">
-        <p ref="nameEl" class="header" :contenteditable="props.editingEnabled && !isLocked"
-          @keydown.enter.prevent="updateName" @blur="updateName">
-          {{ column.name }}
-        </p>
-        <span class="count">{{ props.column.cards.length }}</span>
+        <div class="wrap">
+          <p ref="nameEl" class="header" :contenteditable="props.editingEnabled && !isLocked"
+            @keydown.enter.prevent="updateName" @blur="updateName">
+            {{ column.name }}
+          </p>
+          <span class="count">{{ props.column.cards.length }}</span>
+        </div>
+
         <div class="column-actions">
           <Button @click="board.toggleColumnLock(props.column.id)">
             <template #icon>
@@ -131,14 +140,14 @@ onUnmounted(() => {
       <p v-if="lastEditTime" class="last-edit">{{ lastEditTime }}</p>
     </div>
 
-    <div class="column-actions" :disabled="isLocked">
-      <Button @click="sortCards">
+    <div class="column-actions">
+      <Button @click="sortCards" :disabled="isLocked">
         <template #icon>
-          <IconSort class="icon" :class="{ rotate: sortOrder }" />
+          <IconSort class="sort" :class="{ rotate: sortOrder }" />
         </template>
-        Sort
+        Sort <span v-if="hasSorted && props.column.cards.length > 1">{{ sortLabel }}</span>
       </Button>
-      <Button @click="board.clearColumnCards(props.column.id)">
+      <Button @click="board.clearColumnCards(props.column.id)" :disabled="isLocked">
         <template #icon>
           <IconClear />
         </template>
@@ -176,22 +185,23 @@ onUnmounted(() => {
   outline: none;
 }
 
-.header {
+.column-header .wrap {
+  display: flex;
   font-size: 13px;
   font-weight: 600;
+}
+
+.header {
   color: #a9a9a9;
   text-transform: uppercase;
 }
 
 .header[contenteditable='true']:focus {
-  outline: 1px dashed #aaa;
-  padding: 2px;
-  background: #fff;
+  outline: none;
 }
 
 .count {
-  font-weight: 700;
-  margin-left: 4px;
+  margin-left: 8px;
   color: #3f3f3f;
 }
 
@@ -199,7 +209,6 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   gap: 8px;
-  padding-top: 8px;
 }
 
 .card-list {
@@ -213,9 +222,10 @@ onUnmounted(() => {
 }
 
 .last-edit {
-  opacity: 0.15;
   text-align: center;
   font-size: 14px;
+  font-weight: 500;
   margin-top: 16px;
+  color: rgba(0, 0, 0, 0.15);
 }
 </style>

@@ -17,11 +17,7 @@ const handleClick = (event: MouseEvent) => {
 </script>
 
 <template>
-  <button
-    type="button"
-    :disabled="props.disabled"
-    class="btn-action"
-    :class="props.className"
+  <button type="button" :disabled="props.disabled" class="btn-action" :class="props.className"
     @click="handleClick">
     <slot name="icon" />
     <slot />
@@ -62,11 +58,15 @@ const handleClick = (event: MouseEvent) => {
   background: #becbd7;
 }
 
-.btn-action:deep(.icon) {
+.btn-action:deep(.sort) {
   transition: transform 0.3s ease;
 }
 
 .btn-action:deep(.rotate) {
   transform: rotate(180deg);
+}
+
+.btn-action:disabled {
+  opacity: 0.5;
 }
 </style>

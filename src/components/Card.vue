@@ -4,11 +4,8 @@ import { storeToRefs } from 'pinia'
 import type { Card } from '@/types'
 import { useBoardStore } from '@/stores/board'
 
+import { IconCancel, IconSave, IconDragDrop } from '@/components/icons'
 import Button from './ui/Button.vue'
-import IconCancel from './icons/IconCancel.vue'
-import IconSave from './icons/IconSave.vue'
-import IconDragDrop from './icons/IconDragDrop.vue'
-
 
 const props = defineProps<{
   card: Card

@@ -1,0 +1,10 @@
+
+export { default as IconAdd } from './IconAdd.vue'
+export { default as IconCancel } from './IconCancel.vue'
+export { default as IconClear } from './IconClear.vue'
+export { default as IconDragDrop } from './IconDragDrop.vue'
+export { default as IconPause } from './IconPause.vue'
+export { default as IconPlay } from './IconPlay.vue'
+export { default as IconSave } from './IconSave.vue'
+export { default as IconShuffle } from './IconShuffle.vue'
+export { default as IconSort } from './IconSort.vue'
